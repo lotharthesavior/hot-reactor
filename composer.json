@@ -1,0 +1,20 @@
+{
+  "require": {
+    "ext-inotify": "*",
+    "ext-openswoole": "^22.1",
+    "openswoole/ide-helper": "^22.1",
+    "symfony/event-dispatcher": "^7.0",
+    "vlucas/phpdotenv": "^5.6",
+    "symfony/console": "^7.0"
+  },
+  "config": {
+    "allow-plugins": {
+      "phpro/grumphp": false
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "HotReactor\\": "src/"
+    }
+  }
+}
