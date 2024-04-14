@@ -1,4 +1,7 @@
 {
+  "name": "lotharthesavior/hot-reactor",
+  "description": "Hot Reload Tool.",
+  "type": "library",
   "require": {
     "ext-inotify": "*",
     "ext-openswoole": "^22.1",
@@ -16,5 +19,8 @@
     "psr-4": {
       "HotReactor\\": "src/"
     }
-  }
+  },
+  "bin": [
+    "hot-reactor"
+  ]
 }
