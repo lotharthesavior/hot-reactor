@@ -44,5 +44,5 @@ composer require lotharthesavior/hot-reactor
 After installing the package, you can run the following command to start the Hot Reactor:
 
 ```bash
-vendor/bin/hot-reactor -w="/path/to/your/service" -c="your-command" -o="your-objects"
+vendor/bin/hot-reactor -w "/path/to/your/service" -c "your-command" -o "your-objects"
 ```
