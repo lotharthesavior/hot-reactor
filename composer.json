@@ -2,6 +2,7 @@
   "name": "lotharthesavior/hot-reactor",
   "description": "Hot Reload Tool.",
   "type": "library",
+  "license": "MIT",
   "require": {
     "ext-inotify": "*",
     "ext-openswoole": "^22.1",
