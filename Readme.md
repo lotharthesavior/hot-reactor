@@ -38,7 +38,7 @@ php index.php -w="/path/to/your/service" -c="your-command" -o="your-objects"
 To install Hot Reactor via composer, you can run the following command:
 
 ```bash
-composer require openswoole/hot-reactor
+composer require lotharthesavior/hot-reactor
 ```
 
 After installing the package, you can run the following command to start the Hot Reactor:
