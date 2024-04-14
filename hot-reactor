@@ -11,13 +11,14 @@ use Symfony\Component\Console\Application;
 /**
  * @param string $dir
  * @param string $asset
+ * @param bool $dir
  * @return string
  * @throws Exception
  */
-function findAutoloadFile(string $dir, string $asset): string {
+function findAutoloadFile(string $dir, string $asset, bool $returnDir = false): string {
     $autoloadPath = $dir . $asset;
     if (file_exists($autoloadPath)) {
-        return $autoloadPath;
+        return $returnDir ? dirname($autoloadPath) : $autoloadPath;
     }
 
     $parentDir = dirname($dir);
@@ -31,7 +32,7 @@ require findAutoloadFile(__DIR__, '/vendor/autoload.php');
 
 Co::set(['hook_flags'=> Runtime::HOOK_ALL]);
 
-$dotenv = Dotenv::createImmutable(findAutoloadFile(__DIR__, '.env'));
+$dotenv = Dotenv::createImmutable(findAutoloadFile(__DIR__, '.env', true));
 $dotenv->load();
 
 $application = new Application();
