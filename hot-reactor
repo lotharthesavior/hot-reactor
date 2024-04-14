@@ -8,7 +8,20 @@ use OpenSwoole\Coroutine\System;
 use OpenSwoole\Runtime;
 use Symfony\Component\Console\Application;
 
-require __DIR__ . '/vendor/autoload.php';
+function findAutoloadFile($dir) {
+    $autoloadPath = $dir . '/vendor/autoload.php';
+    if (file_exists($autoloadPath)) {
+        return $autoloadPath;
+    }
+
+    $parentDir = dirname($dir);
+    if ($parentDir == $dir) {
+        throw new Exception('Could not find vendor/autoload.php.');
+    }
+
+    return findAutoloadFile($parentDir);
+}
+require findAutoloadFile(__DIR__);
 
 Co::set(['hook_flags'=> Runtime::HOOK_ALL]);
 
