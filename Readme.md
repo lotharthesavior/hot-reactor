@@ -20,6 +20,7 @@ Check the `.env` file for the settings you need to update. The following are the
 - Step 3: update the `WORKING_DIR` environment setting, to point to the directory where the service is located.
 - Step 4: update the `COMMAND` environment setting, to point to the command you want to run.
 - Step 5: update the `OBJECTS` environment setting, to point to the files you want to watch for changes.
+- Step 6: update the `MAIN_PROCESS_NAME` environment setting, to customzie your main process name.
 
 Hot Reactor comes with a command line tool to run the Hot Reactor. You can run the following command to start the Hot Reactor:
 
@@ -28,10 +29,6 @@ php index.php -w="/path/to/your/service" -c="your-command" -o="your-objects"
 ```
 
 > As in the example, you can also overwrite the `WORKING_DIR`, `COMMAND` and `OBJECTS` settings via command options.
-
-**Extra Steps**
-
-- Update the `MAIN_PROCESS_NAME` environment setting, to customzie your main process name.
 
 ## Option 2: install hot reloaded via composer
 
