@@ -32,7 +32,7 @@ require findAutoloadFile(__DIR__, '/vendor/autoload.php');
 
 Co::set(['hook_flags'=> Runtime::HOOK_ALL]);
 
-$dotenv = Dotenv::createImmutable(findAutoloadFile(__DIR__, '.env', true));
+$dotenv = Dotenv::createImmutable(findAutoloadFile(__DIR__, '/.env', true));
 $dotenv->load();
 
 $application = new Application();
