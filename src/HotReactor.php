@@ -7,11 +7,13 @@ use OpenSwoole\Coroutine as Co;
 use OpenSwoole\Coroutine\System;
 use OpenSwoole\Event;
 use OpenSwoole\Process;
+use Symfony\Component\Process\Process as SymfonyProcess;
 use OpenSwoole\Util;
 
 class HotReactor
 {
     protected Atomic $atomic;
+    protected ?int $commandPid = null;
 
     public function __construct(
         protected string $command,
@@ -22,7 +24,7 @@ class HotReactor
 
         $this->atomic = new Atomic(0);
 
-        (new Process(fn() => Co::run(fn() => $this->startServer())))->start();
+        (new Process(fn() => Co::run(fn() => $this->startService())))->start();
 
         $this->startInotify();
 
@@ -52,16 +54,35 @@ class HotReactor
      *
      * @return void
      */
-    private function startServer(): void
+    private function startService(): void
     {
         $pid = $this->getServicePidByName($_ENV['OBJECT_PROCESS_NAME']);
+
         if ($pid !== null) {
-            echo 'Killing servive process...' . PHP_EOL;
+            echo 'Killing service process...' . PHP_EOL;
             Process::kill($pid, SIGKILL);
         }
 
+        if ($this->commandPid) {
+            Process::kill($this->commandPid, SIGKILL);
+        }
+
         echo 'Starting server...' . PHP_EOL;
-        go(fn() => System::exec($this->command));
+
+        go(function () {
+            $process = new SymfonyProcess(preg_split('/\s+/', $this->command));
+            $process->setTimeout(null);
+            $process->start();
+            $this->commandPid = $process->getPid();
+
+            foreach ($process as $type => $data) {
+                if ($process::OUT === $type) {
+                    echo 'OUT: ' . $data . PHP_EOL;
+                } else {
+                    echo 'ERR: ' . $data . PHP_EOL;
+                }
+            }
+        });
     }
 
     /**
@@ -110,7 +131,7 @@ class HotReactor
             if (!preg_match('/\.php$/', $filePath) || preg_match('/\.php~$/', $filePath)) {
                 continue;
             }
-            $this->startServer();
+            $this->startService();
             echo 'File ' . $filePath . ' has been reloaded.' . PHP_EOL;
             break;
         }
