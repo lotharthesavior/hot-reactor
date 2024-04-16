@@ -4,16 +4,19 @@ namespace HotReactor;
 
 use OpenSwoole\Atomic;
 use OpenSwoole\Coroutine as Co;
-use OpenSwoole\Coroutine\System;
 use OpenSwoole\Event;
 use OpenSwoole\Process;
-use Symfony\Component\Process\Process as SymfonyProcess;
 use OpenSwoole\Util;
 
 class HotReactor
 {
+    protected Process $process;
+    protected int $processPid;
+
+    protected Process $subProcess;
+    protected int $subProcessPid;
+
     protected Atomic $atomic;
-    protected ?int $commandPid = null;
 
     public function __construct(
         protected string $command,
@@ -24,7 +27,18 @@ class HotReactor
 
         $this->atomic = new Atomic(0);
 
-        (new Process(fn() => Co::run(fn() => $this->startService())))->start();
+        $this->process = new Process(function (Process $worker) {
+            $this->subProcess = new Process(fn (Process $sub) => $this->startService($sub));
+            $this->subProcessPid = $this->subProcess->start();
+
+            while ($data = $worker->read()) {
+                Process::kill($this->subProcessPid, SIGKILL);
+                $this->subProcess = new Process(fn (Process $sub) => $this->startService($sub));
+                $this->subProcessPid = $this->subProcess->start();
+                echo 'File ' . $data . ' has been reloaded.' . PHP_EOL;
+            }
+        }, false);
+        $this->processPid = $this->process->start();
 
         $this->startInotify();
 
@@ -54,55 +68,17 @@ class HotReactor
      *
      * @return void
      */
-    private function startService(): void
+    private function startService(Process $worker): void
     {
-        $pid = $this->getServicePidByName($_ENV['OBJECT_PROCESS_NAME']);
+        Co::run(function () use ($worker) {
+            $command = preg_split('/\s+/', $this->command);
+            $commandFile = $command[0];
+            unset($command[0]);
 
-        if ($pid !== null) {
-            echo 'Killing service process...' . PHP_EOL;
-            Process::kill($pid, SIGKILL);
-        }
-
-        if ($this->commandPid) {
-            Process::kill($this->commandPid, SIGKILL);
-        }
-
-        echo 'Starting server...' . PHP_EOL;
-
-        go(function () {
-            $process = new SymfonyProcess(preg_split('/\s+/', $this->command));
-            $process->setTimeout(null);
-            $process->start();
-            $this->commandPid = $process->getPid();
-
-            foreach ($process as $type => $data) {
-                if ($process::OUT === $type) {
-                    echo 'OUT: ' . $data . PHP_EOL;
-                } else {
-                    echo 'ERR: ' . $data . PHP_EOL;
-                }
-            }
+            echo 'Restarting service...' . PHP_EOL;
+            echo PHP_EOL . '================ OUT ================' . PHP_EOL;
+            $worker->exec($commandFile, $command);
         });
-    }
-
-    /**
-     * Retrieve the service PID by name.
-     *
-     * @param string $name
-     * @return int|null
-     */
-    private function getServicePidByName(string $name): ?int
-    {
-        $pid = System::exec(
-            command: '/usr/bin/ps -aux'
-            . ' | grep ' . $name
-            . ' | grep -v \'grep ' . $name . '\''
-            . ' | /usr/bin/awk \'{ print $2; }\''
-            . ' | /usr/bin/sed -n \'1,1p\''
-        );
-        $cleanPid = trim($pid['output'] ?? '');
-
-        return (int) $cleanPid ?: null;
     }
 
     /**
@@ -128,11 +104,10 @@ class HotReactor
 
         foreach ($events as $event) {
             $filePath = $workDir . $event['name'];
-            if (!preg_match('/\.php$/', $filePath) || preg_match('/\.php~$/', $filePath)) {
+            if (!preg_match('/\.(' . $_ENV['FILE_EXTENSIONS'] . ')$/', $filePath) || preg_match('/\.php~$/', $filePath)) {
                 continue;
             }
-            $this->startService();
-            echo 'File ' . $filePath . ' has been reloaded.' . PHP_EOL;
+            $this->process->write($filePath);
             break;
         }
         sleep(1);

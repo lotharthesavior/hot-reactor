@@ -16,11 +16,10 @@ To run services located in other directories:
 Check the `.env` file for the settings you need to update. The following are the steps to follow:
 
 - Step 1: update the `PHP_BIN` environment setting, so it points to the PHP binary file.
-- Step 2: update the `OBJECT_PROCESS_NAME` environment setting, to customize your object process name. This **MUST** be the same as the process name in the service you want to Hot Reload.
-- Step 3: update the `WORKING_DIR` environment setting, to point to the directory where the service is located.
-- Step 4: update the `COMMAND` environment setting, to point to the command you want to run.
-- Step 5: update the `OBJECTS` environment setting, to point to the files you want to watch for changes.
-- Step 6: update the `MAIN_PROCESS_NAME` environment setting, to customzie your main process name.
+- Step 2: update the `WORKING_DIR` environment setting, to point to the directory where the service is located.
+- Step 3: update the `COMMAND` environment setting, to point to the command you want to run.
+- Step 4: update the `OBJECTS` environment setting, to point to the files you want to watch for changes.
+- Step 5: update the `MAIN_PROCESS_NAME` environment setting, to customzie your main process name.
 
 Hot Reactor comes with a command line tool to run the Hot Reactor. You can run the following command to start the Hot Reactor:
 
