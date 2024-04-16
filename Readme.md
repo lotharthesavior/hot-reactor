@@ -15,11 +15,11 @@ To run services located in other directories:
 
 Check the `.env` file for the settings you need to update. The following are the steps to follow:
 
-- Step 1: update the `PHP_BIN` environment setting, so it points to the PHP binary file.
-- Step 2: update the `WORKING_DIR` environment setting, to point to the directory where the service is located.
-- Step 3: update the `COMMAND` environment setting, to point to the command you want to run.
-- Step 4: update the `OBJECTS` environment setting, to point to the files you want to watch for changes.
-- Step 5: update the `MAIN_PROCESS_NAME` environment setting, to customzie your main process name.
+- Step 1: update the `WORKING_DIR` environment setting, to point to the directory where the service is located. `default: /var/www/html/`
+- Step 2: update the `COMMAND` environment setting, to point to the command you want to run. `default: /usr/bin/php server.php`
+- Step 3: update the `OBJECTS` environment setting, to point to the files you want to watch for changes. `default: /var/www/html/|/var/www/html/features/`
+- Step 4: update the `MAIN_PROCESS_NAME` environment setting, to customzie your main process name. `default: hot-reactor`
+- Step 5: update `FILE_EXTENSIONS` environment setting, to specify the file extensions to watch for changes. `default: php|env`
 
 Hot Reactor comes with a command line tool to run the Hot Reactor. You can run the following command to start the Hot Reactor:
 
