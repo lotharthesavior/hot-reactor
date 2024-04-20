@@ -42,3 +42,36 @@ After installing the package, you can run the following command to start the Hot
 ```bash
 vendor/bin/hot-reactor -w "/path/to/your/service" -c "your-command" -o "your-objects"
 ```
+
+---
+
+> **Important**: There is a bug related to when you want to restart an app running sub processes with OpenSwoole\Process. Then, you might need to wait for a SIGKILL at the end of the file so the app restarts gracefully. You do that by adding the following code:
+> 
+> ```php
+> Co::run(function () {
+>     System::waitSignal(SIGKILL, -1);
+> });
+> ```
+
+---
+
+## Contributors
+
+We welcome contributions from everyone! If you're interested in helping improve Hot Reactor, please follow these steps:
+
+1. Fork the repository on GitHub.
+2. Make your changes in a branch named for the feature or fix you're working on.
+3. Submit a pull request through GitHub for review.
+
+Please make sure your contributions adhere to the following guidelines:
+
+- Code contributions should follow the coding style already established in the project.
+- Include comments in your code where necessary to explain complex or non-obvious parts.
+- Update the README.md if your changes require it.
+- Ensure that your code does not introduce any new bugs or security vulnerabilities.
+
+Thank you for considering contributing to Hot Reactor!
+
+## License
+
+Hot Reactor is open-source software licensed under the MIT license. See the [LICENSE](LICENSE) file for more details.

@@ -90,21 +90,24 @@ class HotReactor
      */
     private function inotifyCallback($inotify, string $workDir): void
     {
-        if ($this->atomic->get() > 0){
+        if ($this->atomic->get() > 0) {
             return;
         }
 
         $events = @inotify_read($inotify);
 
         echo PHP_EOL . PHP_EOL . 'Event...' . PHP_EOL;
-        if (!$events){
+        if (!$events) {
             return;
         }
         $this->atomic->add();
 
         foreach ($events as $event) {
             $filePath = $workDir . $event['name'];
-            if (!preg_match('/\.(' . $_ENV['FILE_EXTENSIONS'] . ')$/', $filePath) || preg_match('/\.php~$/', $filePath)) {
+            if (
+                !preg_match('/\.(' . $_ENV['FILE_EXTENSIONS'] . ')$/', $filePath)
+                || preg_match('/\.php~$/', $filePath)
+            ) {
                 continue;
             }
             $this->process->write($filePath);
