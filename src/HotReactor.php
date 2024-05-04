@@ -102,10 +102,12 @@ class HotReactor
         }
         $this->atomic->add();
 
+        $fileExtensions = $_ENV['FILE_EXTENSIONS'] ?? 'php|env';
+
         foreach ($events as $event) {
             $filePath = $workDir . $event['name'];
             if (
-                !preg_match('/\.(' . $_ENV['FILE_EXTENSIONS'] . ')$/', $filePath)
+                !preg_match('/\.(' . $fileExtensions . ')$/', $filePath)
                 || preg_match('/\.php~$/', $filePath)
             ) {
                 continue;

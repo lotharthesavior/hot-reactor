@@ -24,7 +24,7 @@ Check the `.env` file for the settings you need to update. The following are the
 Hot Reactor comes with a command line tool to run the Hot Reactor. You can run the following command to start the Hot Reactor:
 
 ```bash
-php index.php -w="/path/to/your/service" -c="your-command" -o="your-objects"
+php index.php -w "/path/to/your/service" -c "your-command" -o "your-objects"
 ```
 
 > As in the example, you can also overwrite the `WORKING_DIR`, `COMMAND` and `OBJECTS` settings via command options.
@@ -74,4 +74,4 @@ Thank you for considering contributing to Hot Reactor!
 
 ## License
 
-Hot Reactor is open-source software licensed under the MIT license. See the [LICENSE](LICENSE) file for more details.
+Hot Reactor is open-source software licensed under the MIT license. See the [LICENSE](LICENSE.md) file for more details.
